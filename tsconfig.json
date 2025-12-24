@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    /* --- BASES DU LANGAGE --- */
+    "target": "es2020",            /* On compile vers du JS moderne (async/await, etc.) */
+    "module": "commonjs",          /* Le standard Node.js actuel (le plus stable) */
+    "lib": ["es2020"],             /* Les fonctionnalités incluses (pas de DOM car on est en Backend) */
+
+    /* --- ORGANISATION DES FICHIERS --- */
+    "rootDir": "./src",            /* Où est ton code TS */
+    "outDir": "./dist",            /* Où ira le code JS compilé */
+    "moduleResolution": "node",    /* La manière classique de trouver les fichiers */
+
+    /* --- RIGUEUR & QUALITÉ (Le plus important) --- */
+    "strict": true,                /* Active toutes les vérifications strictes (noImplicitAny, nullChecks...) */
+    "noUnusedLocals": true,        /* Erreur si tu déclares une variable sans l'utiliser (Code propre) */
+    "noUnusedParameters": true,    /* Erreur si tu déclares un paramètre de fonction inutile */
+
+    /* --- INTEROPÉRABILITÉ (La solution à ton problème) --- */
+    "esModuleInterop": true,       /* Permet d'importer des modules CommonJS comme s'ils étaient ESM */
+    "skipLibCheck": true,          /* Gagne du temps en ne vérifiant pas les types dans node_modules */
+    "forceConsistentCasingInFileNames": true /* Empêche les bugs liés aux majuscules/minuscules (Windows vs Linux) */
+  },
+  "include": ["src/**/*"],         /* Tout ce qui est dans src est compilé */
+  "exclude": ["node_modules", "dist"] /* On ne touche pas à ça */
+}
