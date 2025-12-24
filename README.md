@@ -7,7 +7,6 @@ L'utilisateur peut gérer sa collection, suivre sa progression, noter ses jeux e
 ## 🎯 Objectif du Projet
 
 Ce projet est avant tout un **outil d'apprentissage approfondi**.
-L'objectif n'est pas d'utiliser des frameworks "magiques" qui font tout le travail, mais de **comprendre et maîtriser** chaque brique de l'architecture logicielle moderne.
 
 **Philosophie de développement :**
 * **No Magic :** Pas d'ORM (type Prisma/TypeORM), utilisation de **SQL brut** pour comprendre les relations et l'optimisation des requêtes.
