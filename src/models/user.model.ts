@@ -5,3 +5,9 @@ export interface User {
     password_hash: string;
     created_at: Date;
 }
+
+export interface UserInput {
+    username: string;
+    email: string;
+    password: string;
+}
