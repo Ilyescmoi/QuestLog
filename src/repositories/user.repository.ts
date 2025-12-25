@@ -21,18 +21,58 @@ export class UserRepository {
     }
 
     static async getAllUsers(): Promise<User[]> {
-        throw new Error('Not implemented');
+        try {
+            const query: string = sql`SELECT *
+                                      FROM users`;
+
+            const result = await pool.query(query);
+
+            return result.rows;
+        } catch (error: any) {
+            console.error('Erreur lors de la récupération des users :', error);
+            throw new Error('Impossible de récupérer la liste des utilisateurs.');
+        }
     }
 
-    /* static async getById(id: number): Promise<User> {
-        throw new Error('Not implemented');
+    static async getById(id: number): Promise<User | null> {
+        try {
+            const query: string = sql`SELECT *
+                                      FROM users WHERE id = $1;`;
+
+            const result = await pool.query(query, [id]);
+
+            return result.rows[0];
+        } catch (error: any) {
+            console.error('Erreur lors de la récupération de utilisateur :', error);
+            throw new Error('Impossible de récupérer un utilisateur.');
+        }
     }
 
-    static async getByEmail(email: string): Promise<User> {
-        throw new Error('Not implemented');
+    static async getByEmail(email: string): Promise<User | null> {
+        try {
+            const query: string = sql`SELECT *
+                                      FROM users WHERE email = $1;`;
+
+            const result = await pool.query(query, [email]);
+
+            return result.rows[0];
+        } catch (error: any) {
+            console.error('Erreur lors de la récupération de utilisateur :', error);
+            throw new Error('Impossible de récupérer un utilisateur.');
+        }
     }
 
     static async getByUsername(username: string): Promise<User[]> {
-        throw new Error('Not implemented');
-    }*/
+        try {
+            const query: string = sql`SELECT *
+                                      FROM users WHERE username = $1;`;
+
+            const result = await pool.query(query, [username]);
+
+            return result.rows;
+        } catch (error: any) {
+            console.error('Erreur lors de la récupération de utilisateur :', error);
+            throw new Error('Impossible de récupérer un utilisateur.');
+        }
+    }
 }
