@@ -108,3 +108,4 @@ public
 *.sqlite
 *.sqlite3
 *.db
+/src/scripts/playground.ts
