@@ -1,0 +1,26 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cyberGradient" x1="0" y1="512" x2="512" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00f2fe" /> <stop offset="100%" stop-color="#4facfe" /> </linearGradient>
+    <linearGradient id="cyberGradientDark" x1="0" y1="512" x2="512" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4facfe" />
+      <stop offset="100%" stop-color="#7028e4" /> </linearGradient>
+  </defs>
+
+  <path
+          d="M340.5 365.5L438.6 463.6C444.9 469.9 455 469.9 461.3 463.6L463.6 461.3C469.9 455 469.9 444.9 463.6 438.6L365.5 340.5"
+          fill="url(#cyberGradientDark)"
+  />
+
+  <path
+          d="M326.3 351.4L132.7 157.8C123.6 148.7 123.6 133.9 132.7 124.8L142.1 115.4C151.2 106.3 165.9 106.3 175 115.4L368.7 309"
+          fill="url(#cyberGradient)"
+          opacity="0.8"
+  />
+
+  <rect x="64" y="64" width="64" height="64" rx="8" fill="url(#cyberGradient)" />
+  <rect x="148" y="48" width="48" height="48" rx="6" fill="url(#cyberGradientDark)" opacity="0.6" />
+  <rect x="48" y="148" width="32" height="32" rx="4" fill="url(#cyberGradient)" opacity="0.4" />
+
+  <circle cx="416" cy="416" r="24" fill="url(#cyberGradient)" />
+</svg>
