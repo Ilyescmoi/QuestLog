@@ -20,6 +20,39 @@ export class UserRepository {
         }
     }
 
+    static async update(id: number, username?: string, email?: string): Promise<User | null> {
+        try {
+            const query = sql`UPDATE users
+                              SET username = (COALESCE($2, username)),
+                                  email    = (COALESCE($3, email))
+                              WHERE id = $1
+                              RETURNING *`;
+            const result = await pool.query(query, [id, username, email]);
+
+            return result.rows[0] || null;
+        } catch (error: any) {
+            console.error('Update Error:', error);
+            throw new Error("Erreur lors de la mise à jour de l'utilisateur.");
+        }
+    }
+
+    static async delete(id: number): Promise<boolean> {
+        try {
+            const query = sql`DELETE FROM users WHERE id=$1`;
+            const result = await pool.query(query, [id]);
+
+            // noinspection RedundantIfStatementJS
+            if ((result.rowCount ?? 0) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error: any) {
+            console.error('Erreur SQL critique :', error);
+            throw new Error("Impossible de supprimer l'utilisateur.");
+        }
+    }
+
     static async getAllUsers(): Promise<User[]> {
         try {
             const query: string = sql`SELECT *
@@ -41,7 +74,7 @@ export class UserRepository {
 
             const result = await pool.query(query, [id]);
 
-            return result.rows[0];
+            return result.rows[0] || null;
         } catch (error: any) {
             console.error('Erreur lors de la récupération de utilisateur :', error);
             throw new Error('Impossible de récupérer un utilisateur.');
@@ -55,7 +88,7 @@ export class UserRepository {
 
             const result = await pool.query(query, [email]);
 
-            return result.rows[0];
+            return result.rows[0] || null;
         } catch (error: any) {
             console.error('Erreur lors de la récupération de utilisateur :', error);
             throw new Error('Impossible de récupérer un utilisateur.');
