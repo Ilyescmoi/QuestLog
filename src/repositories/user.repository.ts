@@ -31,6 +31,9 @@ export class UserRepository {
 
             return result.rows[0] || null;
         } catch (error: any) {
+            if (error.code === '23505') {
+                throw new Error('Cet email est déjà utilisé.');
+            }
             console.error('Update Error:', error);
             throw new Error("Erreur lors de la mise à jour de l'utilisateur.");
         }
