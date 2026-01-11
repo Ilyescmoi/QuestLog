@@ -8,9 +8,24 @@ export class GameRepository {
         const client = await pool.connect();
 
         try {
-            await client.query('BEGIN');
-
             const { title, studio, pegi, summary, cover_url, release_date, platformIds } = gameData;
+
+            if (platformIds && platformIds.length > 0) {
+                const checkQuery = sql`
+                    SELECT g.id
+                    FROM games g
+                             JOIN game_platforms gp ON g.id = gp.game_id
+                    WHERE g.title ILIKE $1
+                      AND gp.platform_id = ANY ($2::int[])
+                `;
+
+                const existingGame = await client.query(checkQuery, [title, platformIds]);
+
+                if (existingGame.rows.length > 0) {
+                    throw new Error('GameAlreadyExists');
+                }
+            }
+            await client.query('BEGIN');
 
             const gameQuery = sql`
                 INSERT INTO games (title, studio, pegi, summary, cover_url, release_date)
@@ -50,12 +65,45 @@ export class GameRepository {
     }
 
     static async update(id: number, gameData: UpdateGameDTO): Promise<Game | null> {
-        const client = await pool.connect(); // Transaction nécessaire !
+        const client = await pool.connect();
 
         try {
-            await client.query('BEGIN');
-
             const { title, studio, pegi, summary, cover_url, release_date, platformIds } = gameData;
+
+            const currentGameQuery = sql`SELECT title
+                                         FROM games
+                                         WHERE id = $1`;
+            const currentGameResult = await client.query(currentGameQuery, [
+                title,
+                platformIds,
+                id,
+            ]);
+
+            if (currentGameResult.rows.length === 0) {
+                return null;
+            }
+
+            const currentTitle = currentGameResult.rows[0].title;
+            const titleToCheck = title || currentTitle;
+
+            if (platformIds && platformIds.length > 0) {
+                const checkQuery = sql`
+                    SELECT g.id
+                    FROM games g
+                             JOIN game_platforms gp ON g.id = gp.game_id
+                    WHERE g.title ILIKE $1
+                      AND gp.platform_id = ANY ($2::int[])
+                      AND g.id != $3
+                `;
+
+                const conflict = await client.query(checkQuery, [titleToCheck, platformIds, id]);
+
+                if (conflict.rows.length > 0) {
+                    throw new Error('GameAlreadyExists');
+                }
+            }
+
+            await client.query('BEGIN');
 
             const updateQuery = sql`
                 UPDATE games
@@ -148,6 +196,26 @@ export class GameRepository {
             const result = await pool.query(query);
 
             return result.rows;
+        } catch (error: any) {
+            console.error('Erreur lors de la récupération des jeux :', error);
+            throw new Error('Impossible de récupérer la liste des jeux.');
+        }
+    }
+
+    static async findByTitle(title: string): Promise<Game | null> {
+        try {
+            const query: string = sql`SELECT g.*,
+                                             JSON_AGG(JSON_BUILD_OBJECT('id', p.id, 'name', p.name, 'slug', p.slug)) AS platforms
+                                      FROM games g
+                                               LEFT JOIN game_platforms gp ON g.id = gp.game_id
+                                               LEFT JOIN platforms p ON gp.platform_id = p.id
+                                      WHERE title = $1
+                                      GROUP BY g.id
+                                      LIMIT 1;`;
+
+            const result = await pool.query(query, [title]);
+
+            return result.rows[0] || null;
         } catch (error: any) {
             console.error('Erreur lors de la récupération des jeux :', error);
             throw new Error('Impossible de récupérer la liste des jeux.');
